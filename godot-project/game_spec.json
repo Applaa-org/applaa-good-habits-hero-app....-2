@@ -1,0 +1,47 @@
+{
+  "game": {
+    "name": "Good Habits Hero",
+    "type": "2D",
+    "genre": "educational",
+    "description": "An educational game for kids to earn stars by completing good habits like brushing teeth, cleaning toys, and helping parents. Features localStorage integration for saving progress."
+  },
+  "settings": {
+    "window": {"width": 800, "height": 600},
+    "physics": {"gravity": 0}
+  },
+  "player": {
+    "name": "Hero",
+    "abilities": ["complete_habits", "earn_stars"]
+  },
+  "entities": {
+    "habits": [
+      {
+        "name": "Brush Teeth",
+        "stars": 3,
+        "icon": "🦷",
+        "description": "Brush your teeth thoroughly"
+      },
+      {
+        "name": "Clean Toys", 
+        "stars": 5,
+        "icon": "🧸",
+        "description": "Clean up and organize toys"
+      },
+      {
+        "name": "Help Parents",
+        "stars": 7,
+        "icon": "🤝",
+        "description": "Help parents with tasks"
+      }
+    ]
+  },
+  "logic": {
+    "winCondition": "complete_habit",
+    "scoring": {
+      "brush_teeth": 3,
+      "clean_toys": 5,
+      "help_parents": 7
+    },
+    "persistence": "localStorage"
+  }
+}

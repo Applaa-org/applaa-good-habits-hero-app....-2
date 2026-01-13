@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Good Habits Hero - Kids Game</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        .game-container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+        }
+        
+        h1 {
+            color: #4a90e2;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 1.2em;
+            margin-bottom: 30px;
+        }
+        
+        .habits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .habit-card {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            border-radius: 15px;
+            padding: 20px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            border: 3px solid transparent;
+        }
+        
+        .habit-card:hover {
+            transform: translateY(-5px);
+            border-color: #4a90e2;
+        }
+        
+        .habit-icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+        
+        .habit-name {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .habit-stars {
+            color: #ffd700;
+            font-size: 1.1em;
+        }
+        
+        .progress-section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            font-size: 1.1em;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #4a90e2;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            margin: 10px;
+        }
+        
+        button:hover {
+            transform: scale(1.05);
+        }
+        
+        .name-input {
+            padding: 12px 20px;
+            border: 2px solid #4a90e2;
+            border-radius: 25px;
+            font-size: 1.1em;
+            margin: 10px;
+            width: 200px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .celebration {
+            animation: bounce 0.6s ease-in-out;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-20px); }
+            60% { transform: translateY(-10px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <!-- Start Screen -->
+        <div id="startScreen">
+            <h1>Good Habits Hero! 🌟</h1>
+            <p class="subtitle">Earn stars by completing good habits!</p>
+            <input type="text" id="playerName" class="name-input" placeholder="Enter your name..." maxlength="20">
+            <div id="highScoreDisplay" style="font-size: 1.2em; color: #ffd700; margin: 10px 0;">High Score: 0 ⭐</div>
+            <button onclick="startGame()">Start Adventure</button>
+            <button onclick="closeGame()">Close Game</button>
+        </div>
+        
+        <!-- Main Game Screen -->
+        <div id="gameScreen" class="hidden">
+            <h1 id="welcomeMessage">Hello, Hero! ⭐</h1>
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="totalStars">0</div>
+                    <div>Total Stars</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="habitsCompleted">0</div>
+                    <div>Habits Done</div>
+                </div>
+            </div>
+            
+            <div class="habits-grid">
+                <div class="habit-card" onclick="selectHabit('brush_teeth')">
+                    <div class="habit-icon">🦷</div>
+                    <div class="habit-name">Brush Teeth</div>
+                    <div class="habit-stars">+3 ⭐</div>
+                </div>
+                <div class="habit-card" onclick="selectHabit('clean_toys')">
+                    <div class="habit-icon">🧸</div>
+                    <div class="habit-name">Clean Toys</div>
+                    <div class="habit-stars">+5 ⭐</div>
+                </div>
+                <div class="habit-card" onclick="selectHabit('help_parents')">
+                    <div class="habit-icon">🤝</div>
+                    <div class="habit-name">Help Parents</div>
+                    <div class="habit-stars">+7 ⭐</div>
+                </div>
+            </div>
+            
+            <button onclick="backToMenu()">Back to Menu</button>
+            <button onclick="closeGame()">Close Game</button>
+        </div>
+        
+        <!-- Habit Activity Screen -->
+        <div id="habitScreen" class="hidden">
+            <h1 id="habitTitle">Good Habit</h1>
+            <div id="habitIcon" style="font-size: 4em; margin: 20px 0;">🌟</div>
+            <p id="habitInstructions" class="subtitle">Complete this good habit!</p>
+            
+            <div class="progress-section">
+                <div class="progress-bar">
+                    <div id="progressFill" class="progress-fill"></div>
+                </div>
+                <div id="progressText">Progress: 0%</div>
+            </div>
+            
+            <button id="doHabitBtn" onclick="doHabit()">Do the Habit!</button>
+            <button onclick="backToGame()">Back</button>
+            <button onclick="closeGame()">Close Game</button>
+        </div>
+        
+        <!-- Victory Screen -->
+        <div id="victoryScreen" class="hidden">
+            <h1 class="celebration">🎉 Habit Hero! 🎉</h1>
+            <p id="victoryMessage" class="subtitle">Amazing work!</p>
+            <div id="starsEarned" style="font-size: 1.5em; color: #ffd700; margin: 20px 0;">You earned stars!</div>
+            <div id="totalStarsVictory" style="font-size: 1.3em; margin: 10px 0;">Total Stars: 0 ⭐</div>
+            
+            <button onclick="continuePlaying()">Continue Playing</button>
+            <button onclick="backToMenu()">Main Menu</button>
+            <button onclick="closeGame()">Close Game</button>
+        </div>
+    </div>
+
+    <script>
+        // Game state
+        let gameState = {
+            playerName: '',
+            totalStars: 0,
+            habitsCompleted: 0,
+            currentHabit: '',
+            habitProgress: 0,
+            gameData: {}
+        };
+        
+        // Habit definitions
+        const HABITS = {
+            brush_teeth: { name: 'Brush Teeth', icon: '🦷', stars: 3, clicks: 5 },
+            clean_toys: { name: 'Clean Toys', icon: '🧸', stars: 5, clicks: 8 },
+            help_parents: { name: 'Help Parents', icon: '🤝', stars: 7, clicks: 10 }
+        };
+        
+        // Initialize game
+        function init() {
+            // Load saved data from localStorage
+            loadGameData();
+            
+            // Update UI
+            updateHighScoreDisplay();
+        }
+        
+        // Load game data from localStorage
+        function loadGameData() {
+            // Request data from Applaa Game Storage
+            if (window.parent && window.parent.postMessage) {
+                window.parent.postMessage({
+                    type: 'applaa-game-load-data',
+                    gameId: 'good-habits-hero'
+                }, '*');
+            }
+            
+            // Listen for data response
+            window.addEventListener('message', function(event) {
+                if (event.data.type === 'applaa-game-data-loaded' && event.data.data) {
+                    const data = event.data.data;
+                    if (data) {
+                        gameState.gameData = data;
+                        gameState.playerName = data.playerName || '';
+                        gameState.totalStars = data.score || 0;
+                        gameState.habitsCompleted = data.habitsCompleted ? data.habitsCompleted.length : 0;
+                        
+                        // Update displays
+                        updateHighScoreDisplay();
+                        if (document.getElementById('playerName')) {
+                            document.getElementById('playerName').value = gameState.playerName;
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Save game data to localStorage
+        function saveGameData() {
+            const data = {
+                playerName: gameState.playerName,
+                score: gameState.totalStars,
+                habitsCompleted: gameState.habitsCompleted,
+                gameProgress: {
+                    brush_teeth: 0,
+                    clean_toys: 0,
+                    help_parents: 0,
+                    total_sessions: 1
+                }
+            };
+            
+            if (window.parent && window.parent.postMessage) {
+                window.parent.postMessage({
+                    type: 'applaa-game-save-data',
+                    gameId: 'good-habits-hero',
+                    data: data
+                }, '*');
+            }
+        }
+        
+        // Update high score display
+        function updateHighScoreDisplay() {
+            const highScoreElement = document.getElementById('highScoreDisplay');
+            if (highScoreElement) {
+                highScoreElement.textContent = `High Score: ${gameState.totalStars} ⭐`;
+            }
+        }
+        
+        // Start the game
+        function startGame() {
+            const playerName = document.getElementById('playerName').value.trim() || 'Hero';
+            gameState.playerName = playerName;
+            
+            // Save player name
+            saveGameData();
+            
+            // Show game screen
+            document.getElementById('startScreen').classList.add('hidden');
+            document.getElementById('gameScreen').classList.remove('hidden');
+            
+            // Update welcome message
+            document.getElementById('welcomeMessage').textContent = `Hello, ${playerName}! ⭐`;
+            updateGameStats();
+        }
+        
+        // Update game statistics
+        function updateGameStats() {
+            document.getElementById('totalStars').textContent = gameState.totalStars;
+            document.getElementById('habitsCompleted').textContent = gameState.habitsCompleted;
+        }
+        
+        // Select a habit
+        function selectHabit(habitId) {
+            gameState.currentHabit = habitId;
+            const habit = HABITS[habitId];
+            
+            // Show habit screen
+            document.getElementById('gameScreen').classList.add('hidden');
+            document.getElementById('habitScreen').classList.remove('hidden');
+            
+            // Update habit UI
+            document.getElementById('habitTitle').textContent = habit.name;
+            document.getElementById('habitIcon').textContent = habit.icon;
+            
+            // Set instructions
+            let instructions = '';
+            switch(habitId) {
+                case 'brush_teeth':
+                    instructions = 'Time to brush your teeth! Click the button 5 times to brush thoroughly!';
+                    break;
+                case 'clean_toys':
+                    instructions = 'Let\'s clean up the toys! Click the button 8 times to put all toys away!';
+                    break;
+                case 'help_parents':
+                    instructions = 'Help your parents with a task! Click the button 10 times to complete the help!';
+                    break;
+            }
+            document.getElementById('habitInstructions').textContent = instructions;
+            
+            // Reset progress
+            gameState.habitProgress = 0;
+            updateHabitProgress();
+        }
+        
+        // Do the habit (click button)
+        function doHabit() {
+            const habit = HABITS[gameState.currentHabit];
+            const progressPerClick = 100 / habit.clicks;
+            
+            gameState.habitProgress = Math.min(gameState.habitProgress + progressPerClick, 100);
+            updateHabitProgress();
+            
+            // Add celebration effect
+            const btn = document.getElementById('doHabitBtn');
+            btn.classList.add('celebration');
+            setTimeout(() => btn.classList.remove('celebration'), 600);
+            
+            // Check if completed
+            if (gameState.habitProgress >= 100) {
+                completeHabit();
+            }
+        }
+        
+        // Update habit progress
+        function updateHabitProgress() {
+            document.getElementById('progressFill').style.width = gameState.habitProgress + '%';
+            document.getElementById('progressText').textContent = `Progress: ${Math.round(gameState.habitProgress)}%`;
+        }
+        
+        // Complete the habit
+        function completeHabit() {
+            const habit = HABITS[gameState.currentHabit];
+            const starsEarned = habit.stars;
+            
+            // Update game state
+            gameState.totalStars += starsEarned;
+            gameState.habitsCompleted++;
+            
+            // Save progress
+            saveGameData();
+            
+            // Show victory screen
+            document.getElementById('habitScreen').classList.add('hidden');
+            document.getElementById('victoryScreen').classList.remove('hidden');
+            
+            // Update victory UI
+            document.getElementById('victoryMessage').textContent = `Amazing work, ${gameState.playerName}!`;
+            document.getElementById('starsEarned').textContent = `You earned ${starsEarned} stars for ${habit.name}! ⭐`;
+            document.getElementById('totalStarsVictory').textContent = `Total Stars: ${gameState.totalStars} ⭐`;
+            
+            // Update high score display
+            updateHighScoreDisplay();
+        }
+        
+        // Navigation functions
+        function backToMenu() {
+            document.getElementById('gameScreen').classList.add('hidden');
+            document.getElementById('victoryScreen').classList.add('hidden');
+            document.getElementById('startScreen').classList.remove('hidden');
+        }
+        
+        function backToGame() {
+            document.getElementById('habitScreen').classList.add('hidden');
+            document.getElementById('gameScreen').classList.remove('hidden');
+        }
+        
+        function continuePlaying() {
+            document.getElementById('victoryScreen').classList.add('hidden');
+            document.getElementById('gameScreen').classList.remove('hidden');
+            updateGameStats();
+        }
+        
+        function closeGame() {
+            if (window.parent && window.parent.postMessage) {
+                window.parent.postMessage({ type: 'applaa-game-close' }, '*');
+            }
+        }
+        
+        // Initialize on load
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>
